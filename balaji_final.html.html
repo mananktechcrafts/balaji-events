@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balaji Events | Shubh Arambh Enterprise</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #800000; --gold: #D4AF37; --bg: #fffcf2; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--bg); min-height: 100vh; display: flex; flex-direction: column; color: #333; }
+
+        /* Navigation */
+        nav { background: white; padding: 0.8rem 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; border-bottom: 3px solid var(--gold); }
+        .logo-text { font-family: 'Playfair Display'; font-size: 1.8rem; font-weight: 900; color: var(--primary); }
+        .logo-text span { color: var(--gold); }
+
+        /* Login Screen Overlay */
+        #login-screen {
+            height: 100vh; display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(rgba(128,0,0,0.85), rgba(128,0,0,0.85)), url('https://images.unsplash.com/photo-1519225495806-7d52232a5de3?q=80&w=1600');
+            background-size: cover; position: fixed; width: 100%; z-index: 2000; top: 0; left: 0;
+        }
+
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 20px; flex: 1; }
+        .card { background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); margin-bottom: 20px; border-left: 5px solid var(--primary); }
+        
+        /* Celebration Grid */
+        .celebration-grid { 
+            display: grid; 
+            grid-template-columns: repeat(4, 1fr); 
+            gap: 15px; 
+            margin: 25px 0; 
+        }
+
+        @media (max-width: 900px) {
+            .celebration-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        .event-card { 
+            position: relative; aspect-ratio: 1 / 1; border-radius: 15px; overflow: hidden; 
+            cursor: pointer; transition: 0.4s; border: 3px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+        }
+        .event-card:hover { transform: translateY(-5px); border-color: var(--gold); }
+        .event-card img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .event-card .label { 
+            position: absolute; bottom: 0; left: 0; right: 0; 
+            background: linear-gradient(transparent, rgba(0,0,0,0.8)); 
+            padding: 15px; color: white; text-align: center;
+        }
+        .event-card h3 { font-size: 1rem; text-shadow: 2px 2px 4px rgba(0,0,0,0.7); }
+
+        .options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 20px 0; }
+        .option-item { 
+            display: flex; align-items: center; padding: 15px; border: 1px solid #eee; 
+            border-radius: 10px; background: #fff; cursor: pointer; transition: 0.2s;
+        }
+        .option-item input { width: 18px; height: 18px; margin-right: 12px; accent-color: var(--primary); flex-shrink: 0; }
+        .option-item span { font-weight: 500; font-size: 0.95rem; text-align: left; }
+
+        .btn { padding: 12px 25px; border: none; border-radius: 50px; cursor: pointer; font-weight: 600; transition: 0.3s; text-align: center; }
+        .btn-primary { background: var(--primary); color: white; width: 100%; }
+        .btn-gold { background: var(--gold); color: white; font-size: 0.8rem; width: auto; }
+        
+        .hidden { display: none !important; }
+
+        footer { background: white; padding: 25px 5%; border-top: 3px solid var(--gold); text-align: center; margin-top: auto; }
+        .contact-info { font-size: 1.1rem; color: var(--primary); font-weight: 700; }
+
+        #receipt-box { border: 2px dashed var(--gold); padding: 30px; background: white; }
+        
+        /* Developer Credit Style */
+        .dev-credit { margin-top: 20px; padding-top: 15px; border-top: 1px dashed #eee; font-size: 0.75rem; color: #888; text-align: center; }
+        .dev-credit strong { color: #555; }
+        .dev-credit a { color: var(--primary); text-decoration: none; }
+
+        @media print {
+            nav, footer, #booking-flow, .btn, .no-print { display: none !important; }
+            .card { border: none; box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="login-screen">
+    <div class="card" style="width: 400px; border-top: 6px solid var(--gold); border-left: none; text-align: center;">
+        <h2 class="logo-text">BALAJI <span>EVENTS</span></h2>
+        <p style="margin-bottom: 20px; color: #666;">Enter details for Shubh Arambh</p>
+        <input type="text" id="login-name" placeholder="Full Name" style="padding:12px; width:100%; margin-bottom:10px; border-radius:8px; border:1px solid #ddd;">
+        <input type="tel" id="login-phone" placeholder="Phone Number" maxlength="10" style="padding:12px; width:100%; border-radius:8px; border:1px solid #ddd;">
+        <button class="btn btn-primary" style="margin-top: 20px;" onclick="handleLogin()">Access Dashboard</button>
+        
+        <div style="margin-top: 15px;">
+            <a href="#" onclick="adminEntry()" style="color: #999; font-size: 0.8rem; text-decoration: none;">Admin Login</a>
+        </div>
+
+        <div class="dev-credit">
+            <p>Developed by <strong>Manank TechCrafts</strong></p>
+            <p>Support: <a href="mailto:mananktechcraft@outlook.com">mananktechcraft@outlook.com</a></p>
+        </div>
+    </div>
+</div>
+
+<nav id="main-nav" class="hidden">
+    <div class="logo-text">BALAJI <span>EVENTS</span></div>
+    <div style="display:flex; align-items:center; gap: 15px;">
+        <button id="adm-gal" class="btn btn-gold hidden" onclick="editGallery()">Edit Images</button>
+        <button id="adm-opt" class="btn btn-gold hidden" onclick="editOptions()">Edit Services</button>
+        <span id="user-tag" style="font-weight: 600; color: var(--primary);"></span>
+        <button class="btn btn-primary" style="width: auto; padding: 8px 20px;" onclick="location.reload()">Logout</button>
+    </div>
+</nav>
+
+<div class="container hidden" id="main-container">
+    <div id="booking-flow">
+        <h2 style="font-family: 'Playfair Display'; color: var(--primary); margin-bottom: 5px;">Shubh Arambh</h2>
+        <p style="color: #666; margin-bottom: 20px;">What are we celebrating today?</p>
+        
+        <div class="celebration-grid">
+            <div class="event-card" onclick="selectEvent('Wedding')">
+                <img id="img-wed" src="" alt="Wedding"><div class="label"><h3>Royal Wedding</h3></div>
+            </div>
+            <div class="event-card" onclick="selectEvent('Birthday')">
+                <img id="img-bday" src="" alt="Birthday"><div class="label"><h3>Grand Birthday</h3></div>
+            </div>
+            <div class="event-card" onclick="selectEvent('Meeting')">
+                <img id="img-meet" src="" alt="Meeting"><div class="label"><h3>Corporate Meet</h3></div>
+            </div>
+            <div class="event-card" onclick="selectEvent('Party')">
+                <img id="img-party" src="" alt="Party"><div class="label"><h3>Gala Party</h3></div>
+            </div>
+        </div>
+
+        <section id="details-card" class="card hidden" style="margin-top: 30px;">
+            <h3 id="selected-title" style="color: var(--primary); margin-bottom: 15px;"></h3>
+            <label style="font-weight: 600;">Event Date:</label>
+            <input type="date" id="event-date" style="padding:12px; width:100%; border-radius:8px; border:1px solid #ddd; margin-top:10px;">
+            
+            <p style="margin-top: 20px; font-weight: 600;">Select Services Required:</p>
+            <div class="options-grid" id="service-list"></div>
+            
+            <button class="btn btn-primary" onclick="generateReceipt()">Generate Receipt</button>
+        </section>
+    </div>
+
+    <section id="receipt-view" class="card hidden">
+        <div id="receipt-box">
+            <div style="text-align: center; border-bottom: 2px solid var(--gold); margin-bottom: 20px; padding-bottom: 10px;">
+                <h2 class="logo-text">BALAJI <span>EVENTS</span></h2>
+                <p>Booking Acknowledgement</p>
+            </div>
+            <p><strong>Customer:</strong> <span id="r-name"></span></p>
+            <p><strong>Phone:</strong> <span id="r-phone"></span></p>
+            <p><strong>Event Date:</strong> <span id="r-dt"></span></p>
+            <p style="margin-top: 15px;"><strong>Requested Services:</strong></p>
+            <ul id="r-items" style="margin-left: 20px; padding: 10px 0;"></ul>
+            <p style="font-weight: 700; color: var(--primary); border-top: 1px solid #eee; padding-top: 10px;" id="r-contact-display"></p>
+            
+            <div style="margin-top: 20px; font-size: 0.7rem; color: #aaa; text-align: center;">
+                Generated by Balaji Events Portal | Developed by Manank TechCrafts
+            </div>
+        </div>
+        <button class="btn btn-primary no-print" style="margin-top:20px;" onclick="window.print()">Print / Save PDF</button>
+        <button class="btn no-print" style="margin-top:10px; width:100%; background:#888; color:white;" onclick="location.reload()">Back to Home</button>
+    </section>
+</div>
+
+<footer id="main-footer" class="hidden">
+    <div class="contact-info" id="footer-text">Contact : Mr Binit Murarka 95151 55937</div>
+    <div style="font-size: 0.8rem; color: #888; margin-top: 5px;">Powered by Manank TechCrafts</div>
+    <button id="adm-foot" class="btn btn-gold hidden" onclick="editFooter()">Edit Contact Info</button>
+</footer>
+
+<script>
+    let db = {
+        name: "", phone: "", role: "CLIENT",
+        contact: localStorage.getItem('balaji_contact') || "Contact : Mr Binit Murarka 95151 55937",
+        gallery: JSON.parse(localStorage.getItem('balaji_gal')) || {
+            wed: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=800",
+            bday: "https://images.unsplash.com/photo-1533294485628-c586c91d8146?q=80&w=800",
+            meet: "https://images.unsplash.com/photo-1431540015161-0bf868a2d407?q=80&w=800",
+            party: "https://images.unsplash.com/photo-1516997121675-4c2d1684aa3e?q=80&w=800"
+        },
+        services: JSON.parse(localStorage.getItem('balaji_opts')) || ["Premium Catering", "Stage Decoration", "DJ & Sound System", "Photography", "Guest Transport", "Singer"]
+    };
+
+    function handleLogin() {
+        db.name = document.getElementById('login-name').value;
+        db.phone = document.getElementById('login-phone').value;
+        if(!db.name || db.phone.length < 10) return alert("Enter Name and 10-digit Phone Number");
+        showApp();
+    }
+
+    function adminEntry() {
+        if(prompt("Admin ID") === "9854076606" && prompt("Password") === "Sandip@123") {
+            db.role = "SUPER"; db.name = "Admin";
+            showApp();
+            document.querySelectorAll('.btn-gold').forEach(b => b.classList.remove('hidden'));
+        }
+    }
+
+    function showApp() {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('main-nav').classList.remove('hidden');
+        document.getElementById('main-container').classList.remove('hidden');
+        document.getElementById('main-footer').classList.remove('hidden');
+        document.getElementById('user-tag').innerText = "Namaste, " + db.name;
+        document.getElementById('footer-text').innerText = db.contact;
+        updateUI();
+    }
+
+    function updateUI() {
+        document.getElementById('img-wed').src = db.gallery.wed;
+        document.getElementById('img-bday').src = db.gallery.bday;
+        document.getElementById('img-meet').src = db.gallery.meet;
+        document.getElementById('img-party').src = db.gallery.party;
+        document.getElementById('service-list').innerHTML = db.services.map(s => `
+            <label class="option-item"><input type="checkbox" value="${s}"><span>${s}</span></label>
+        `).join('');
+    }
+
+    function selectEvent(type) {
+        document.getElementById('selected-title').innerText = "Celebrating: " + type;
+        document.getElementById('details-card').classList.remove('hidden');
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    function generateReceipt() {
+        const date = document.getElementById('event-date').value;
+        const selected = Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(c => c.value);
+        if(!date || selected.length === 0) return alert("Pick date and services");
+
+        document.getElementById('r-name').innerText = db.name;
+        document.getElementById('r-phone').innerText = db.phone;
+        document.getElementById('r-dt').innerText = date;
+        document.getElementById('r-items').innerHTML = selected.map(i => `<li>${i}</li>`).join('');
+        document.getElementById('r-contact-display').innerText = db.contact;
+        
+        document.getElementById('booking-flow').classList.add('hidden');
+        document.getElementById('receipt-view').classList.remove('hidden');
+    }
+
+    function editGallery() {
+        db.gallery.wed = prompt("Wedding URL:", db.gallery.wed);
+        db.gallery.bday = prompt("Birthday URL:", db.gallery.bday);
+        db.gallery.meet = prompt("Meeting URL:", db.gallery.meet);
+        db.gallery.party = prompt("Party URL:", db.gallery.party);
+        localStorage.setItem('balaji_gal', JSON.stringify(db.gallery));
+        updateUI();
+    }
+
+    function editOptions() {
+        const up = prompt("Services (comma separated):", db.services.join(", "));
+        if(up) { db.services = up.split(",").map(s => s.trim()); localStorage.setItem('balaji_opts', JSON.stringify(db.services)); updateUI(); }
+    }
+
+    function editFooter() {
+        const up = prompt("Edit Contact Info:", db.contact);
+        if(up) { db.contact = up; localStorage.setItem('balaji_contact', up); document.getElementById('footer-text').innerText = up; }
+    }
+</script>
+</body>
+</html>
